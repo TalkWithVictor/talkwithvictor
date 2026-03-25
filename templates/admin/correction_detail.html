@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Corregir texto{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item active"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Corregir texto</div>
+      <a href="/admin/corrections" class="btn btn-ghost btn-sm">← Volver</a>
+    </div>
+
+    <div class="page-body" style="max-width:700px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <!-- Student's text -->
+      <div class="card" style="margin-bottom:1rem;">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;">
+          <div>
+            <div style="font-size:.72rem;color:var(--red);font-weight:700;text-transform:uppercase;margin-bottom:.3rem;">Texto del alumno</div>
+            <h2 style="font-size:1.2rem;font-weight:800;">{{ correction.title }}</h2>
+            <div style="font-size:.78rem;color:var(--muted);margin-top:.2rem;">
+              {{ correction.user.name }} · {{ correction.created_at.strftime('%d/%m/%Y a las %H:%M') }}
+            </div>
+          </div>
+          {% if correction.status == 'corrected' %}
+            <span class="badge badge-green">✓ Corregido</span>
+          {% else %}
+            <span class="badge badge-yellow">⏳ Pendiente</span>
+          {% endif %}
+        </div>
+        <div style="background:#0a0a0a;border-radius:10px;padding:1.2rem;font-size:.9rem;line-height:1.75;color:#ddd;border-left:3px solid var(--muted);">
+          {{ correction.content }}
+        </div>
+      </div>
+
+      <!-- Correction form -->
+      <div class="card">
+        <div style="font-size:.85rem;font-weight:700;margin-bottom:1rem;">✏️ Tu corrección</div>
+        <form method="POST">
+          <div class="form-group">
+            <textarea name="correction" rows="8" placeholder="Escribe aquí tu corrección y comentarios..." required>{{ correction.correction or '' }}</textarea>
+          </div>
+          <div style="display:flex;gap:.8rem;">
+            <button type="submit" class="btn btn-green">Guardar corrección ✓</button>
+            <a href="/admin/corrections" class="btn btn-ghost">Cancelar</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

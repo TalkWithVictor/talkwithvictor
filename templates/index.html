@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talk With Victor 🇪🇸 – Real Spanish</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --red:#E63946; --red2:#c1121f; --yellow:#FFD60A;
+      --dark:#0D0D0D; --card:#161616; --border:rgba(255,255,255,0.08);
+      --muted:#888; --text:#F0F0F0;
+    }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Inter',sans-serif; background:var(--dark); color:var(--text); overflow-x:hidden; }
+
+    /* BANNER */
+    .banner {
+      background:linear-gradient(90deg,var(--red2),var(--red),#FF6B7A,var(--red),var(--red2));
+      background-size:300% 100%; animation:gradMove 5s ease infinite;
+      text-align:center; padding:.6rem 1rem; font-size:.82rem; font-weight:700; color:white;
+    }
+    @keyframes gradMove{0%,100%{background-position:0%}50%{background-position:100%}}
+    .banner span{background:var(--yellow);color:#111;padding:1px 8px;border-radius:4px;margin:0 4px;}
+
+    /* NAV */
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;position:sticky;top:0;z-index:999;background:rgba(13,13,13,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);}
+    .logo{font-size:1.4rem;font-weight:900;letter-spacing:-.5px;}
+    .logo .v{color:var(--red);}
+    .nav-links{display:flex;align-items:center;gap:1.8rem;}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.88rem;font-weight:500;transition:color .2s;}
+    .nav-links a:hover{color:white;}
+    .nav-btn{background:var(--red)!important;color:white!important;padding:.5rem 1.3rem;border-radius:8px;font-weight:700!important;}
+    .nav-btn:hover{background:var(--red2)!important;}
+
+    /* HERO */
+    .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:6rem 5% 4rem;position:relative;overflow:hidden;}
+    .hero-glow{position:absolute;width:800px;height:800px;border-radius:50%;background:radial-gradient(circle,rgba(230,57,70,.15) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;animation:pulse 5s ease infinite;}
+    @keyframes pulse{0%,100%{opacity:.6;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.1)}}
+    .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:60px 60px;pointer-events:none;mask-image:radial-gradient(ellipse at center,black 20%,transparent 75%);}
+    .hero-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);color:#FF8F96;padding:.4rem 1rem;border-radius:100px;font-size:.78rem;font-weight:700;letter-spacing:.08em;margin-bottom:2rem;position:relative;}
+    .dot{width:6px;height:6px;background:var(--red);border-radius:50%;animation:blink 1.5s ease infinite;}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+    .hero h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:900;line-height:1.05;letter-spacing:-2px;max-width:900px;position:relative;margin-bottom:1.5rem;}
+    .gr{background:linear-gradient(135deg,var(--red),#FF6B7A);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .gy{background:linear-gradient(135deg,var(--yellow),#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero p{font-size:1.15rem;color:var(--muted);max-width:580px;line-height:1.75;margin-bottom:2.5rem;position:relative;}
+    .hero-ctas{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;position:relative;margin-bottom:4rem;}
+    .btn{display:inline-flex;align-items:center;gap:8px;padding:.9rem 2rem;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;transition:all .2s;}
+    .btn-red{background:var(--red);color:white;box-shadow:0 4px 24px rgba(230,57,70,.35);}
+    .btn-red:hover{background:var(--red2);transform:translateY(-2px);box-shadow:0 8px 32px rgba(230,57,70,.45);}
+    .btn-ghost{background:transparent;color:white;border:1px solid var(--border);}
+    .btn-ghost:hover{border-color:rgba(255,255,255,.25);background:rgba(255,255,255,.04);}
+    .hero-stats{display:flex;background:var(--card);border:1px solid var(--border);border-radius:16px;overflow:hidden;position:relative;}
+    .stat{padding:1.2rem 2rem;text-align:center;border-right:1px solid var(--border);}
+    .stat:last-child{border-right:none;}
+    .stat-n{font-size:1.6rem;font-weight:900;background:linear-gradient(135deg,var(--yellow),#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .stat-l{font-size:.72rem;color:var(--muted);margin-top:2px;font-weight:500;}
+
+    /* SECTIONS */
+    .section{padding:6rem 5%;}
+    .sec-label{display:inline-block;color:var(--red);font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;margin-bottom:.7rem;}
+    .sec-title{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:900;letter-spacing:-1px;line-height:1.1;margin-bottom:.8rem;}
+    .sec-sub{color:var(--muted);font-size:1rem;line-height:1.75;max-width:580px;}
+    .center{text-align:center;}
+    .center .sec-sub{margin:0 auto;}
+
+    /* VIDEO PRESENTATION */
+    .video-section{background:#0A0A0A;}
+    .video-wrap{max-width:900px;margin:3rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .video-player{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--border);background:var(--card);}
+    .video-player::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--yellow));z-index:1;}
+    .video-thumb-inner{height:280px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;background:linear-gradient(135deg,#0D0D0D,#1a0808);cursor:pointer;}
+    .play-circle{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red2));display:flex;align-items:center;justify-content:center;font-size:1.6rem;box-shadow:0 8px 32px rgba(230,57,70,.4);transition:transform .2s,box-shadow .2s;}
+    .play-circle:hover{transform:scale(1.1);box-shadow:0 12px 40px rgba(230,57,70,.5);}
+    .video-caption{font-size:.85rem;color:var(--muted);}
+    .video-tag{position:absolute;top:1rem;right:1rem;background:var(--red);color:white;font-size:.68rem;font-weight:800;padding:.25rem .7rem;border-radius:100px;z-index:2;}
+    .video-text h3{font-size:1.6rem;font-weight:900;letter-spacing:-.5px;margin-bottom:1rem;line-height:1.2;}
+    .video-text p{color:var(--muted);font-size:.95rem;line-height:1.75;margin-bottom:1.2rem;}
+    .video-bullets{display:flex;flex-direction:column;gap:.7rem;}
+    .vb{display:flex;align-items:center;gap:.7rem;font-size:.88rem;}
+    .vb-icon{width:28px;height:28px;border-radius:7px;background:rgba(230,57,70,.1);display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0;}
+
+    /* ABOUT */
+    .about-wrap{display:grid;grid-template-columns:1fr 1.2fr;gap:4rem;align-items:start;max-width:1100px;margin:0 auto;}
+    .about-card{background:var(--card);border:1px solid var(--border);border-radius:20px;overflow:hidden;}
+    .about-card-top{background:linear-gradient(135deg,#1a0808,#0D0D0D);padding:2.5rem;display:flex;flex-direction:column;align-items:center;text-align:center;border-bottom:1px solid var(--border);}
+    .big-avatar{width:100px;height:100px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red2));display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin-bottom:1rem;box-shadow:0 8px 28px rgba(230,57,70,.35);}
+    .about-card-top h3{font-size:1.4rem;font-weight:900;margin-bottom:.3rem;}
+    .about-card-top .tagline{color:var(--red);font-size:.82rem;font-weight:700;margin-bottom:1rem;}
+    .pills{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:center;}
+    .pill{background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;padding:.3rem .8rem;font-size:.75rem;color:#ccc;font-weight:500;}
+    .about-card-body{padding:1.8rem;}
+    .about-card-body p{color:var(--muted);font-size:.88rem;line-height:1.75;}
+    .about-text .sec-sub{margin-bottom:2rem;max-width:100%;}
+    .fact-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.5rem;}
+    .fact{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem;}
+    .fact-num{font-size:1.5rem;font-weight:900;background:linear-gradient(135deg,var(--yellow),#FFA500);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:.2rem;}
+    .fact-label{font-size:.75rem;color:var(--muted);font-weight:500;}
+    .quote-box{margin-top:1.5rem;background:rgba(230,57,70,.06);border:1px solid rgba(230,57,70,.15);border-radius:12px;padding:1.2rem;font-size:.88rem;color:#ccc;line-height:1.7;font-style:italic;}
+    .quote-box strong{color:white;font-style:normal;}
+
+    /* MONTHLY MODEL */
+    .monthly{background:#0A0A0A;}
+    .monthly-wrap{max-width:1000px;margin:3rem auto 0;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center;}
+    .monthly-visual{display:flex;flex-direction:column;gap:.8rem;}
+    .month-row{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem;display:flex;align-items:center;gap:1rem;}
+    .month-row.active{border-color:rgba(230,57,70,.4);background:rgba(230,57,70,.05);}
+    .month-badge{background:var(--red);color:white;font-size:.7rem;font-weight:800;padding:.25rem .7rem;border-radius:100px;flex-shrink:0;}
+    .month-badge.past{background:rgba(255,255,255,.1);color:var(--muted);}
+    .month-videos{flex:1;}
+    .month-videos h4{font-size:.85rem;font-weight:700;margin-bottom:.2rem;}
+    .month-videos p{font-size:.75rem;color:var(--muted);}
+    .month-count{font-size:.75rem;font-weight:700;color:var(--yellow);}
+    .monthly-text .sec-sub{margin-bottom:1.5rem;max-width:100%;}
+    .why-items{display:flex;flex-direction:column;gap:1rem;}
+    .why-item{display:flex;gap:.8rem;align-items:flex-start;}
+    .why-icon{width:36px;height:36px;border-radius:8px;background:rgba(230,57,70,.1);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;}
+    .why-item h4{font-size:.88rem;font-weight:700;margin-bottom:.2rem;}
+    .why-item p{font-size:.8rem;color:var(--muted);line-height:1.5;}
+
+    /* CATEGORIES */
+    .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;max-width:1200px;margin:3rem auto 0;}
+    .cat-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.6rem 1.4rem;transition:all .2s;cursor:default;position:relative;overflow:hidden;}
+    .cat-card::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(230,57,70,.07),transparent);opacity:0;transition:opacity .2s;}
+    .cat-card:hover{transform:translateY(-4px);border-color:rgba(230,57,70,.4);box-shadow:0 12px 32px rgba(230,57,70,.12);}
+    .cat-card:hover::after{opacity:1;}
+    .cat-emoji{font-size:1.9rem;margin-bottom:.8rem;display:block;}
+    .cat-card h3{font-size:.92rem;font-weight:800;margin-bottom:.4rem;}
+    .cat-card p{font-size:.77rem;color:var(--muted);line-height:1.5;margin-bottom:.7rem;}
+    .cat-count{font-size:.68rem;color:var(--red);font-weight:700;}
+    .cat-badge{position:absolute;top:1rem;right:1rem;background:var(--red);color:white;font-size:.6rem;font-weight:800;padding:2px 7px;border-radius:100px;}
+    .cat-badge.new{background:rgba(45,198,83,.8);}
+    .cat-badge.hot{background:var(--red);}
+    .cat-badge.unique{background:linear-gradient(135deg,#7B2FBE,#4CC9F0);}
+
+    /* FEATURES */
+    .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1.2rem;max-width:1100px;margin:3rem auto 0;}
+    .feat-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:2rem;position:relative;overflow:hidden;}
+    .feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;}
+    .fc-red::before{background:linear-gradient(90deg,var(--red),#FF6B7A);}
+    .fc-blue::before{background:linear-gradient(90deg,#4CC9F0,#7B2FBE);}
+    .fc-yellow::before{background:linear-gradient(90deg,var(--yellow),#FFA500);}
+    .fc-green::before{background:linear-gradient(90deg,#2DC653,#00B4D8);}
+    .feat-icon{font-size:2.4rem;margin-bottom:.9rem;}
+    .feat-card h3{font-size:1.05rem;font-weight:800;margin-bottom:.5rem;}
+    .feat-card p{color:var(--muted);font-size:.86rem;line-height:1.7;margin-bottom:1.2rem;}
+    .feat-tag{display:inline-flex;align-items:center;gap:5px;background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.2);color:#FF8F96;padding:.25rem .7rem;border-radius:100px;font-size:.73rem;font-weight:600;}
+
+    /* HOW IT WORKS */
+    .steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.2rem;max-width:1100px;margin:3rem auto 0;}
+    .step{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;}
+    .step-n{font-size:2.8rem;font-weight:900;color:rgba(230,57,70,.2);line-height:1;margin-bottom:.8rem;}
+    .step h3{font-size:.92rem;font-weight:700;margin-bottom:.5rem;}
+    .step p{font-size:.82rem;color:var(--muted);line-height:1.6;}
+
+    /* REVIEWS */
+    .reviews-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.2rem;max-width:1100px;margin:3rem auto 0;}
+    .review-card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:1.8rem;position:relative;}
+    .review-card::before{content:'"';position:absolute;top:.8rem;right:1.2rem;font-size:4rem;color:rgba(230,57,70,.12);font-family:Georgia,serif;line-height:1;}
+    .stars{color:var(--yellow);font-size:1rem;margin-bottom:1rem;letter-spacing:2px;}
+    .review-text{color:#ccc;font-size:.87rem;line-height:1.7;margin-bottom:1.2rem;font-style:italic;}
+    .reviewer{display:flex;align-items:center;gap:.8rem;}
+    .rev-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--red),var(--red2));display:flex;align-items:center;justify-content:center;font-size:.9rem;}
+    .rev-name{font-size:.83rem;font-weight:700;}
+    .rev-meta{font-size:.73rem;color:var(--muted);}
+    .preply-tag{display:inline-flex;align-items:center;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:.2rem .6rem;font-size:.67rem;color:var(--muted);margin-top:.6rem;}
+
+    /* EARLY BIRD */
+    .early-card{max-width:800px;margin:3rem auto 0;background:linear-gradient(135deg,#1a0a0a,#1a1a0a);border:1px solid rgba(255,214,10,.25);border-radius:20px;padding:3rem;display:grid;grid-template-columns:1fr auto;gap:2rem;align-items:center;}
+    .early-label{color:var(--yellow);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;}
+    .early-title{font-size:1.8rem;font-weight:900;letter-spacing:-1px;margin-bottom:.8rem;}
+    .early-title span{color:var(--yellow);}
+    .early-desc{color:var(--muted);font-size:.88rem;line-height:1.7;}
+    .early-feats{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:1.2rem;}
+    .ef{background:rgba(255,214,10,.08);border:1px solid rgba(255,214,10,.2);color:var(--yellow);padding:.25rem .7rem;border-radius:100px;font-size:.76rem;font-weight:600;}
+    .spots-box{text-align:center;}
+    .spots-num{font-size:3.5rem;font-weight:900;color:var(--yellow);line-height:1;}
+    .spots-lbl{font-size:.73rem;color:var(--muted);font-weight:600;}
+
+    /* PRICING */
+    .pricing-wrap{max-width:520px;margin:3rem auto 0;}
+    .price-card{background:var(--card);border:1px solid rgba(230,57,70,.4);border-radius:20px;overflow:hidden;box-shadow:0 0 80px rgba(230,57,70,.12);}
+    .price-top{background:linear-gradient(135deg,var(--red),var(--red2));padding:2rem 2.5rem;text-align:center;}
+    .price-top .badge{font-size:.72rem;font-weight:700;letter-spacing:.1em;opacity:.85;margin-bottom:.5rem;}
+    .price-amount{font-size:4rem;font-weight:900;letter-spacing:-2px;}
+    .price-amount span{font-size:1.1rem;font-weight:400;opacity:.75;}
+    .price-note2{font-size:.82rem;opacity:.8;margin-top:.3rem;}
+    .enroll-fee{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border-radius:100px;padding:.35rem 1rem;font-size:.78rem;font-weight:600;margin-top:1rem;}
+    .price-body{padding:2rem 2.5rem;}
+    .price-features{list-style:none;margin-bottom:2rem;}
+    .price-features li{display:flex;align-items:center;gap:10px;padding:.6rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+    .price-features li:last-child{border-bottom:none;}
+    .check{color:var(--red);font-weight:800;}
+    .price-cta{display:block;background:linear-gradient(135deg,var(--red),var(--red2));color:white;text-align:center;padding:1rem;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;transition:all .2s;box-shadow:0 4px 20px rgba(230,57,70,.35);}
+    .price-cta:hover{opacity:.9;transform:translateY(-2px);}
+    .price-note{text-align:center;color:var(--muted);font-size:.76rem;margin-top:.8rem;}
+    .price-extra{display:flex;align-items:center;gap:10px;background:rgba(255,214,10,.07);border:1px solid rgba(255,214,10,.2);border-radius:10px;padding:.9rem 1rem;margin-top:1.5rem;font-size:.83rem;color:var(--yellow);}
+
+    /* FAQ */
+    .faq-list{max-width:720px;margin:3rem auto 0;display:flex;flex-direction:column;gap:.8rem;}
+    .faq-item{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+    .faq-q{padding:1.2rem 1.5rem;font-weight:700;font-size:.92rem;display:flex;justify-content:space-between;align-items:center;}
+    .faq-q::after{content:'+';color:var(--red);font-size:1.3rem;font-weight:400;}
+    .faq-a{padding:0 1.5rem 1.2rem;color:var(--muted);font-size:.88rem;line-height:1.7;}
+
+    /* FINAL */
+    .final{background:var(--dark);text-align:center;padding:8rem 5%;position:relative;overflow:hidden;}
+    .final::before{content:'';position:absolute;width:700px;height:700px;border-radius:50%;background:radial-gradient(circle,rgba(230,57,70,.12) 0%,transparent 70%);top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;}
+    .final h2{font-size:clamp(2.2rem,5vw,3.5rem);font-weight:900;letter-spacing:-1.5px;margin-bottom:1rem;position:relative;}
+    .final p{color:var(--muted);font-size:1.1rem;margin-bottom:2.5rem;position:relative;}
+
+    /* FOOTER */
+    footer{background:#080808;border-top:1px solid var(--border);padding:2rem 5%;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;}
+    footer .logo{font-size:1.1rem;}
+    footer p{color:#444;font-size:.8rem;}
+    footer a{color:#555;text-decoration:none;font-size:.8rem;}
+    footer a:hover{color:#888;}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      nav{padding:1rem 4%;}
+      .nav-links a:not(.nav-btn){display:none;}
+      .about-wrap,.video-wrap,.monthly-wrap{grid-template-columns:1fr;}
+      .hero-stats{flex-direction:column;}
+      .stat{border-right:none;border-bottom:1px solid var(--border);}
+      .stat:last-child{border-bottom:none;}
+      .early-card{grid-template-columns:1fr;text-align:center;}
+      .spots-box{border-top:1px solid var(--border);padding-top:1.5rem;}
+      .fact-grid{grid-template-columns:1fr 1fr;}
+    }
+  </style>
+</head>
+<body>
+
+<!-- BANNER -->
+<div class="banner">
+  🎉 FOUNDING MEMBERS · <span>€0 enrollment fee</span> for the first 10 students · Only <span>7 spots left</span>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">Talk<span class="v">With</span>Victor 🇪🇸</div>
+  <div class="nav-links">
+    <a href="#about">About Victor</a>
+    <a href="#categories">Content</a>
+    <a href="#community">Community</a>
+    <a href="#reviews">Reviews</a>
+    <a href="#pricing">Pricing</a>
+    <a href="/login" class="nav-btn">Iniciar sesión →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-badge"><span class="dot"></span> PRIVATE PLATFORM · NATIVE SPANISH SPEAKER FROM SPAIN</div>
+  <h1>Learn <span class="gr">Real Spanish</span>.<br/>Not the <span class="gy">Textbook</span> Kind.</h1>
+  <p>Exclusive video library with 12+ categories, personal corrections from Victor, and a global community of learners — all in one private platform.</p>
+  <div class="hero-ctas">
+    <a href="#join" class="btn btn-red">Get Full Access →</a>
+    <a href="#victor-video" class="btn btn-ghost">Meet Victor first ↓</a>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-n">100+</div><div class="stat-l">Students taught</div></div>
+    <div class="stat"><div class="stat-n">15+</div><div class="stat-l">Countries</div></div>
+    <div class="stat"><div class="stat-n">120+</div><div class="stat-l">Planned videos</div></div>
+    <div class="stat"><div class="stat-n">🇪🇸</div><div class="stat-l">Native speaker</div></div>
+  </div>
+</section>
+
+<!-- VIDEO PRESENTATION -->
+<section class="section video-section" id="victor-video">
+  <div class="center">
+    <span class="sec-label">Meet your teacher</span>
+    <div class="sec-title">Hi, I'm Victor 👋</div>
+  </div>
+  <div class="video-wrap">
+    <div class="video-player">
+      <div class="video-thumb-inner">
+        <div class="play-circle">▶</div>
+        <!-- Replace src with your real video embed -->
+        <div class="video-caption">Watch Victor's introduction (2 min)</div>
+      </div>
+      <div class="video-tag">🎬 Personal intro</div>
+    </div>
+    <div class="video-text">
+      <h3>A real person.<br/>A real teacher.</h3>
+      <p>Unlike online courses made by faceless companies, Talk With Victor is exactly what it sounds like — a platform built and run by me, personally, for my students.</p>
+      <p>I review your corrections. I film the videos. I know your name. That's what makes this different.</p>
+      <div class="video-bullets">
+        <div class="vb"><div class="vb-icon">🎓</div><span>Law student at university in Barcelona</span></div>
+        <div class="vb"><div class="vb-icon">🌍</div><span>Moving to Miami next year to study abroad</span></div>
+        <div class="vb"><div class="vb-icon">📹</div><span>23 private Spanish classes every week</span></div>
+        <div class="vb"><div class="vb-icon">🇪🇸</div><span>100% native Spaniard — born and raised</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT VICTOR -->
+<section class="section" id="about" style="background:var(--dark);">
+  <div class="about-wrap">
+    <div>
+      <div class="about-card">
+        <div class="about-card-top">
+          <div class="big-avatar">👨‍🏫</div>
+          <h3>Víctor</h3>
+          <div class="tagline">Native Spanish Teacher · Barcelona, Spain 🇪🇸</div>
+          <div class="pills">
+            <span class="pill">21 years old</span>
+            <span class="pill">🎓 Law Student</span>
+            <span class="pill">✈️ Miami next year</span>
+            <span class="pill">📹 Online & in-person</span>
+            <span class="pill">🌍 Global students</span>
+          </div>
+        </div>
+        <div class="about-card-body">
+          <p>Despite being only 21, Victor has spent years teaching Spanish — both in person and online — to students from all over the world. He currently gives 23 private classes per week and has worked with more than 100 students from over 15 different countries.</p>
+          <br/>
+          <p>He started on Preply, built a loyal following, and eventually moved his students off the platform to teach them directly — his way, without commissions or restrictions. This year, he's taking that one step further with Talk With Victor.</p>
+        </div>
+      </div>
+    </div>
+    <div>
+      <span class="sec-label">Who is Victor?</span>
+      <div class="sec-title">Young, experienced,<br/>and 100% real</div>
+      <p class="sec-sub">Victor isn't a language school or a faceless app. He's a 21-year-old Spaniard studying Law in Barcelona — who also happens to be one of the most dedicated online Spanish teachers you'll find.</p>
+      <div class="fact-grid">
+        <div class="fact"><div class="fact-num">100+</div><div class="fact-label">Students taught</div></div>
+        <div class="fact"><div class="fact-num">15+</div><div class="fact-label">Countries</div></div>
+        <div class="fact"><div class="fact-num">23</div><div class="fact-label">Classes per week</div></div>
+        <div class="fact"><div class="fact-num">4+</div><div class="fact-label">Years teaching</div></div>
+      </div>
+      <div class="quote-box">
+        "My students don't just learn Spanish — they learn <strong>Spanish the way Spaniards actually speak it</strong>. The slang, the culture, the rhythm of the language. That's something you can't get from a textbook or an app."
+        <br/><br/>— Víctor
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MONTHLY MODEL -->
+<section class="section monthly" id="how-content">
+  <div class="monthly-wrap">
+    <div class="monthly-text">
+      <span class="sec-label">How the content works</span>
+      <div class="sec-title">New videos<br/>every month</div>
+      <p class="sec-sub">This isn't a course you buy once and finish. It's a living platform that grows every single week — so there's always something new to learn.</p>
+      <div class="why-items">
+        <div class="why-item">
+          <div class="why-icon">🔄</div>
+          <div><h4>New videos every week</h4><p>Victor uploads multiple videos per week across all categories. The library never stops growing.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">📅</div>
+          <div><h4>New categories over time</h4><p>New topics and series are launched every month. Your subscription always has fresh content.</p></div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">🎯</div>
+          <div><h4>Built around real student needs</h4><p>Victor creates content based on what his actual students ask for. It's practical, not theoretical.</p></div>
+        </div>
+      </div>
+    </div>
+    <div class="monthly-visual">
+      <div class="month-row">
+        <span class="month-badge past">Jan</span>
+        <div class="month-videos"><h4>Launch content</h4><p>Pronunciation basics, ser vs estar, first slang videos</p></div>
+        <span class="month-count">12 videos</span>
+      </div>
+      <div class="month-row">
+        <span class="month-badge past">Feb</span>
+        <div class="month-videos"><h4>Culture & Grammar</h4><p>Spanish bar culture, subjunctive, role plays</p></div>
+        <span class="month-count">10 videos</span>
+      </div>
+      <div class="month-row active">
+        <span class="month-badge">Mar 🔴 LIVE</span>
+        <div class="month-videos"><h4>Dangerous Words + Catalan</h4><p>Insults, false friends, Catalan culture explained</p></div>
+        <span class="month-count">8+ videos</span>
+      </div>
+      <div class="month-row">
+        <span class="month-badge" style="background:rgba(255,255,255,.08);color:var(--muted);">Apr</span>
+        <div class="month-videos"><h4>Coming soon...</h4><p>New series announced for April</p></div>
+        <span class="month-count" style="color:var(--muted);">?</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CATEGORIES -->
+<section class="section" id="categories" style="background:var(--dark);">
+  <div class="center">
+    <span class="sec-label">Content library</span>
+    <div class="sec-title">12 categories. 120+ videos.</div>
+    <p class="sec-sub">From your first Spanish words to sounding like a native. Everything is here.</p>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <span class="cat-emoji">🗣️</span>
+      <h3>Pronunciation</h3>
+      <p>C/Z/S, R/RR, B/V, rhythm, regional accents. Sound like a Spaniard.</p>
+      <div class="cat-count">20 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">💬</span>
+      <h3>Real Vocabulary</h3>
+      <p>Bar words, friendship words, slang by generation. What books won't teach you.</p>
+      <div class="cat-count">15 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">📚</span>
+      <h3>Practical Grammar</h3>
+      <p>Ser vs estar, por vs para, subjunctive — explained the way natives think about it.</p>
+      <div class="cat-count">20 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">⚠️</span>
+      <h3>Dangerous Words</h3>
+      <p>Words with double meanings, what NOT to say, insults explained with context.</p>
+      <div class="cat-count">15 videos planned</div>
+      <span class="cat-badge hot">🔥 HOT</span>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🇪🇸</span>
+      <h3>Spanish Culture</h3>
+      <p>Bar life, Spanish schedules, humor, family, north vs south — understand the culture.</p>
+      <div class="cat-count">15 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🟡</span>
+      <h3>Catalan Culture</h3>
+      <p>Catalan vs Castilian, living in Barcelona, language politics explained without drama.</p>
+      <div class="cat-count">10 videos planned</div>
+      <span class="cat-badge unique">UNIQUE</span>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🎭</span>
+      <h3>Role Plays</h3>
+      <p>Restaurant, travel, job interviews, dates. Real conversations with Victor and guests.</p>
+      <div class="cat-count">12 videos planned</div>
+      <span class="cat-badge new">NEW</span>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🌱</span>
+      <h3>Complete Beginners</h3>
+      <p>Start from absolute zero. The alphabet, first words, first phrases — done right.</p>
+      <div class="cat-count">10 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🧩</span>
+      <h3>Mindset & Fluency</h3>
+      <p>How to think in Spanish, how to interrupt, how to sound confident without being perfect.</p>
+      <div class="cat-count">10 videos planned</div>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">😂</span>
+      <h3>Humor & Jokes</h3>
+      <p>Spanish jokes, irony, sarcasm — understand why Spaniards laugh at the things they do.</p>
+      <div class="cat-count">8 videos planned</div>
+      <span class="cat-badge hot">🔥 HOT</span>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">🎬</span>
+      <h3>Series & Movies</h3>
+      <p>Spanish shows analyzed for vocabulary and culture. Learn while watching real content.</p>
+      <div class="cat-count">8 videos planned</div>
+      <span class="cat-badge new">NEW</span>
+    </div>
+    <div class="cat-card">
+      <span class="cat-emoji">✈️</span>
+      <h3>Spanish for Real Life</h3>
+      <p>Spanish for travel, work, dating, arguing. Exactly what you need for real situations.</p>
+      <div class="cat-count">10 videos planned</div>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY & CORRECTIONS -->
+<section class="section" id="community" style="background:#0A0A0A;">
+  <div class="center">
+    <span class="sec-label">More than just videos</span>
+    <div class="sec-title">A full learning experience</div>
+    <p class="sec-sub">Your membership includes much more than a video library.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feat-card fc-red">
+      <div class="feat-icon">👥</div>
+      <h3>Student Community</h3>
+      <p>Connect with other students from all over the world. Chat, share progress and practice together. You're not learning alone.</p>
+      <span class="feat-tag">🌍 Students from 15+ countries</span>
+    </div>
+    <div class="feat-card fc-blue">
+      <div class="feat-icon">📞</div>
+      <h3>Practice Calls</h3>
+      <p>Organize conversation sessions with other members. Speaking with real people is the fastest way to improve your Spanish.</p>
+      <span class="feat-tag">🗣️ Free conversation practice</span>
+    </div>
+    <div class="feat-card fc-yellow">
+      <div class="feat-icon">✍️</div>
+      <h3>Writing Correction</h3>
+      <p>Send Victor your texts — emails, essays, messages — and he'll correct them personally with detailed feedback.</p>
+      <span class="feat-tag">📝 Personal feedback from Victor</span>
+    </div>
+    <div class="feat-card fc-green">
+      <div class="feat-icon">🎙️</div>
+      <h3>Speaking Correction</h3>
+      <p>Record yourself speaking and send it to Victor. He'll review your pronunciation, fluency and grammar personally.</p>
+      <span class="feat-tag">🎯 Personalized feedback</span>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="section" style="background:var(--dark);">
+  <div class="center">
+    <span class="sec-label">How it works</span>
+    <div class="sec-title">Simple. No surprises.</div>
+  </div>
+  <div class="steps">
+    <div class="step"><div class="step-n">01</div><h3>Pay your enrollment</h3><p>One-time €50 enrollment fee (FREE for founding members). Permanent access from day one.</p></div>
+    <div class="step"><div class="step-n">02</div><h3>Subscribe monthly</h3><p>€35/month keeps everything active. New videos weekly, community, and corrections included.</p></div>
+    <div class="step"><div class="step-n">03</div><h3>Watch, interact & send</h3><p>Access videos, join the community, practice calls with students, and send Victor your materials for correction.</p></div>
+    <div class="step"><div class="step-n">04</div><h3>Keep improving</h3><p>Combine the platform with 1-on-1 classes with Victor for the fastest possible progress.</p></div>
+  </div>
+</section>
+
+<!-- REVIEWS -->
+<section class="section" id="reviews" style="background:#0A0A0A;">
+  <div class="center">
+    <span class="sec-label">What students say</span>
+    <div class="sec-title">Real reviews from real students</div>
+  </div>
+  <div class="reviews-grid">
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">"Victor is an excellent teacher! I'm really happy I started Spanish lessons with him. In every lesson I see improvement and that motivates me so much to continue. Thanks to him I'm learning a lot and with pleasure. Highly recommended!"</div>
+      <div class="reviewer"><div class="rev-av">👩</div><div><div class="rev-name">Verified Student</div><div class="rev-meta">🇪🇸 Spanish · Preply</div></div></div>
+      <div class="preply-tag">⭐ Verified Preply Review</div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">"Victor explains things in a way that actually makes sense. He's patient, funny and very professional. I love that he teaches real Spanish — not the boring textbook version. Best decision I made."</div>
+      <div class="reviewer"><div class="rev-av">🧑</div><div><div class="rev-name">Current Student</div><div class="rev-meta">🌍 International · Private class</div></div></div>
+    </div>
+    <div class="review-card">
+      <div class="stars">★★★★★</div>
+      <div class="review-text">"I tried many Spanish teachers before Victor. None of them taught me the things he does — real slang, culture, how Spaniards actually think. My confidence has gone through the roof."</div>
+      <div class="reviewer"><div class="rev-av">👨</div><div><div class="rev-name">Current Student</div><div class="rev-meta">🌍 International · Private class</div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- EARLY BIRD -->
+<section class="section" style="background:var(--dark);">
+  <div class="center">
+    <span class="sec-label">Founding Members</span>
+    <div class="sec-title">Join first. Save the most.</div>
+  </div>
+  <div class="early-card">
+    <div>
+      <div class="early-label">🎉 FOUNDING MEMBER OFFER</div>
+      <div class="early-title">€0 enrollment fee<br/><span>for the first 10 students</span></div>
+      <div class="early-desc">Be one of the first 10 members and skip the €50 enrollment fee entirely. Full access from day one at just €35/month. This offer disappears once the 10 spots are gone — no exceptions.</div>
+      <div class="early-feats">
+        <span class="ef">✓ Skip €50 enrollment fee</span>
+        <span class="ef">✓ Full platform access</span>
+        <span class="ef">✓ Founding member badge</span>
+        <span class="ef">✓ Priority for new content</span>
+      </div>
+    </div>
+    <div class="spots-box">
+      <div class="spots-num">7</div>
+      <div class="spots-lbl">spots remaining</div>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="section" id="pricing" style="background:#0A0A0A;">
+  <div class="center">
+    <span class="sec-label">Pricing</span>
+    <div class="sec-title">One plan. Everything included.</div>
+    <p class="sec-sub">No hidden fees. No tiers. Cancel anytime.</p>
+  </div>
+  <div class="pricing-wrap" id="join">
+    <div class="price-card">
+      <div class="price-top">
+        <div class="badge">FULL MEMBERSHIP 🇪🇸</div>
+        <div class="price-amount">€35 <span>/ month</span></div>
+        <div class="price-note2">after a one-time enrollment fee</div>
+        <div class="enroll-fee">🎓 €50 enrollment · FREE for first 10 students</div>
+      </div>
+      <div class="price-body">
+        <ul class="price-features">
+          <li><span class="check">✓</span> Full access to 120+ exclusive videos</li>
+          <li><span class="check">✓</span> All 12 categories — grammar, slang, culture & more</li>
+          <li><span class="check">✓</span> New videos added every single week</li>
+          <li><span class="check">✓</span> Writing correction by Victor personally</li>
+          <li><span class="check">✓</span> Speaking video correction & detailed feedback</li>
+          <li><span class="check">✓</span> Student community + practice calls</li>
+          <li><span class="check">✓</span> All levels: A1 beginner to C1 advanced</li>
+          <li><span class="check">✓</span> Watch on any device, anywhere</li>
+          <li><span class="check">✓</span> Cancel anytime, no penalties</li>
+        </ul>
+        <a href="/login" class="price-cta">Acceder / Unirme →</a>
+        <p class="price-note">Contact Victor directly. You'll get payment details and access within 24h.</p>
+        <div class="price-extra">
+          <span style="font-size:1.2rem;">💬</span>
+          Want 1-on-1 private classes with Victor too? Ask about availability when you sign up.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" style="background:var(--dark);">
+  <div class="center">
+    <span class="sec-label">FAQ</span>
+    <div class="sec-title">Got questions?</div>
+  </div>
+  <div class="faq-list">
+    <div class="faq-item"><div class="faq-q">Who is Victor exactly?</div><div class="faq-a">Victor is a 21-year-old native Spaniard from Barcelona, currently studying Law. He's been teaching Spanish — both in person and online — for several years, and has worked with over 100 students from more than 15 countries. Next year he'll be studying in Miami.</div></div>
+    <div class="faq-item"><div class="faq-q">Who is this platform for?</div><div class="faq-a">Anyone learning Spanish — from complete beginners to advanced speakers. All levels are covered and the content grows every week, so there's always something relevant for you.</div></div>
+    <div class="faq-item"><div class="faq-q">What is the €50 enrollment fee for?</div><div class="faq-a">It's a one-time fee that gives you permanent access to the platform. The first 10 founding members pay €0.</div></div>
+    <div class="faq-item"><div class="faq-q">How often is new content added?</div><div class="faq-a">Victor uploads new videos every week. The content library grows constantly — it's not a course you finish, it's a platform that keeps going.</div></div>
+    <div class="faq-item"><div class="faq-q">How does writing and speaking correction work?</div><div class="faq-a">You send Victor your texts or voice/video recordings directly. He reviews them personally and sends back detailed corrections and feedback — not automated, not a bot.</div></div>
+    <div class="faq-item"><div class="faq-q">Can I also take private 1-on-1 classes with Victor?</div><div class="faq-a">Yes. Victor still takes private students. The platform works perfectly alongside individual classes. Ask about availability when you sign up.</div></div>
+    <div class="faq-item"><div class="faq-q">Can I cancel anytime?</div><div class="faq-a">Yes. Cancel with no penalties. The enrollment fee is non-refundable as it gives permanent access.</div></div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section class="final">
+  <h2>Ready to speak <span class="gr">real Spanish</span>?</h2>
+  <p>Join Talk With Victor — only 7 founding member spots left at €0 enrollment.</p>
+  <a href="/login" class="btn btn-red" style="margin:0 auto;display:inline-flex;">Get Access Now →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="logo">Talk<span class="v">With</span>Victor 🇪🇸</div>
+  <p>© 2026 Talk With Victor · All rights reserved</p>
+  <a href="mailto:victor9232005@gmail.com">victor9232005@gmail.com</a>
+</footer>
+
+</body>
+</html>

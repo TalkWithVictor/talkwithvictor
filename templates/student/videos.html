@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+{% block title %}Vídeos{% endblock %}
+
+{% block extra_css %}
+<style>
+  .filter-bar{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1rem 1.5rem;margin-bottom:1.5rem;display:flex;flex-wrap:wrap;align-items:center;gap:1rem;}
+  .filter-bar input{flex:1;min-width:180px;background:#1e1e1e;border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;border-radius:8px;font-family:inherit;font-size:.87rem;outline:none;}
+  .filter-bar input:focus{border-color:var(--red);}
+  .filter-bar select{background:#1e1e1e;border:1px solid var(--border);color:var(--text);padding:.55rem .9rem;border-radius:8px;font-family:inherit;font-size:.87rem;cursor:pointer;outline:none;}
+  .cat-pills{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.5rem;}
+  .cat-pill{padding:.35rem .9rem;border-radius:100px;font-size:.78rem;font-weight:600;border:1px solid var(--border);color:var(--muted);cursor:pointer;transition:all .2s;text-decoration:none;}
+  .cat-pill:hover,.cat-pill.active{background:rgba(230,57,70,.1);border-color:rgba(230,57,70,.4);color:var(--text);}
+  .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;}
+  .video-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s;}
+  .video-card:hover{transform:translateY(-3px);border-color:rgba(230,57,70,.3);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+  .video-thumb{height:140px;background:linear-gradient(135deg,#1a0808,#0D0D0D);display:flex;align-items:center;justify-content:center;position:relative;}
+  .play{width:48px;height:48px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .video-viewed{position:absolute;top:.5rem;right:.5rem;background:rgba(45,198,83,.8);color:white;font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;}
+  .video-level{position:absolute;top:.5rem;left:.5rem;font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;}
+  .level-beginner{background:rgba(45,198,83,.8);color:white;}
+  .level-intermediate{background:rgba(255,214,10,.8);color:#111;}
+  .level-advanced{background:rgba(230,57,70,.8);color:white;}
+  .video-info{padding:.9rem;}
+  .video-info .cat{font-size:.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;}
+  .video-info h4{font-size:.88rem;font-weight:700;margin-bottom:.3rem;line-height:1.3;}
+  .video-info .dur{font-size:.75rem;color:var(--muted);}
+  .empty{text-align:center;padding:4rem 2rem;color:var(--muted);}
+  .empty .ico{font-size:3rem;margin-bottom:1rem;}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Área de miembro</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">🏠</span> Mi panel</a>
+      <a href="/videos" class="nav-item active"><span class="nav-icon">🎬</span> Todos los vídeos</a>
+      <a href="/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> Mi perfil</a>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="name">{{ current_user.name }}</div>
+      <div class="email">{{ current_user.email }}</div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Biblioteca de vídeos</div>
+      <span style="color:var(--muted);font-size:.85rem;">{{ videos|length }} vídeos</span>
+    </div>
+
+    <div class="page-body">
+      <!-- Filters -->
+      <form method="GET" class="filter-bar">
+        <input type="text" name="q" value="{{ search }}" placeholder="🔍 Buscar vídeos...">
+        <select name="level" onchange="this.form.submit()">
+          <option value="">Todos los niveles</option>
+          <option value="beginner" {% if level_filter=='beginner' %}selected{% endif %}>Principiante</option>
+          <option value="intermediate" {% if level_filter=='intermediate' %}selected{% endif %}>Intermedio</option>
+          <option value="advanced" {% if level_filter=='advanced' %}selected{% endif %}>Avanzado</option>
+        </select>
+        <button type="submit" class="btn btn-red btn-sm">Buscar</button>
+        {% if search or level_filter or category_filter %}
+          <a href="/videos" class="btn btn-ghost btn-sm">Limpiar filtros ✕</a>
+        {% endif %}
+      </form>
+
+      <!-- Category pills -->
+      <div class="cat-pills">
+        <a href="/videos" class="cat-pill {% if not category_filter %}active{% endif %}">Todos</a>
+        {% for cat in categories %}
+          <a href="/videos?category={{ cat.name }}" class="cat-pill {% if category_filter == cat.name %}active{% endif %}">
+            {{ cat.emoji }} {{ cat.name }}
+          </a>
+        {% endfor %}
+      </div>
+
+      <!-- Video grid -->
+      {% if videos %}
+        <div class="video-grid">
+          {% for video in videos %}
+            <a href="/video/{{ video.id }}" style="text-decoration:none;color:inherit;">
+              <div class="video-card">
+                <div class="video-thumb">
+                  <div class="play">▶</div>
+                  {% if video.id in viewed_ids %}
+                    <div class="video-viewed">✓ Visto</div>
+                  {% endif %}
+                  {% if video.level != 'all' %}
+                    <div class="video-level level-{{ video.level }}">{{ video.level|title }}</div>
+                  {% endif %}
+                </div>
+                <div class="video-info">
+                  <div class="cat">{{ video.category }}</div>
+                  <h4>{{ video.title }}</h4>
+                  <div class="dur">{% if video.duration %}⏱ {{ video.duration }}{% else %}Ver vídeo{% endif %} · {{ video.view_count }} vistas</div>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="empty">
+          <div class="ico">🎬</div>
+          <p>No hay vídeos que coincidan con tu búsqueda.</p>
+          <a href="/videos" style="color:var(--red);font-size:.88rem;font-weight:600;">Ver todos los vídeos →</a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

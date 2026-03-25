@@ -1,0 +1,186 @@
+{% extends "base.html" %}
+{% block title %}Admin – Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+  .recent-table{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+  .recent-table .table-header{padding:1rem 1.2rem;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+  .recent-table .table-header h3{font-size:.92rem;font-weight:800;}
+  .quick-actions{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem;margin-bottom:2rem;}
+  .action-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;text-align:center;transition:all .2s;cursor:pointer;}
+  .action-card:hover{border-color:rgba(230,57,70,.4);transform:translateY(-2px);}
+  .action-card .ico{font-size:2rem;margin-bottom:.5rem;}
+  .action-card h3{font-size:.88rem;font-weight:700;margin-bottom:.3rem;}
+  .action-card p{font-size:.78rem;color:var(--muted);}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item active"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item">
+        <span class="nav-icon">✏️</span> Correcciones
+        {% if pending_corrections > 0 %}
+          <span class="badge badge-red" style="margin-left:auto;">{{ pending_corrections }}</span>
+        {% endif %}
+      </a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="name">Victor (Admin)</div>
+      <div class="email">victor9232005@gmail.com</div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Panel de administración</div>
+      <a href="/admin/students/create" class="btn btn-red btn-sm">+ Nuevo alumno</a>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="num yellow">{{ students|length }}</div>
+          <div class="lbl">Alumnos totales</div>
+        </div>
+        <div class="stat-card">
+          <div class="num green">{{ active_members }}</div>
+          <div class="lbl">Miembros activos</div>
+        </div>
+        <div class="stat-card">
+          <div class="num red">{{ video_count }}</div>
+          <div class="lbl">Vídeos publicados</div>
+        </div>
+        <div class="stat-card">
+          <div class="num" style="color:#ccc;">{{ pending_corrections }}</div>
+          <div class="lbl">Correcciones pendientes</div>
+        </div>
+      </div>
+
+      <!-- Quick actions -->
+      <div style="font-size:1rem;font-weight:800;margin-bottom:1rem;">⚡ Acciones rápidas</div>
+      <div class="quick-actions">
+        <a href="/admin/students/create" style="text-decoration:none;color:inherit;">
+          <div class="action-card">
+            <div class="ico">👤</div>
+            <h3>Nuevo alumno</h3>
+            <p>Crear cuenta para un alumno</p>
+          </div>
+        </a>
+        <a href="/admin/videos/upload" style="text-decoration:none;color:inherit;">
+          <div class="action-card">
+            <div class="ico">🎬</div>
+            <h3>Subir vídeo</h3>
+            <p>Añadir nuevo vídeo a la plataforma</p>
+          </div>
+        </a>
+        <a href="/admin/corrections" style="text-decoration:none;color:inherit;">
+          <div class="action-card">
+            <div class="ico">✏️</div>
+            <h3>Correcciones</h3>
+            <p>{{ pending_corrections }} pendientes de revisar</p>
+          </div>
+        </a>
+        <a href="/admin/categories" style="text-decoration:none;color:inherit;">
+          <div class="action-card">
+            <div class="ico">📂</div>
+            <h3>Categorías</h3>
+            <p>Gestionar categorías de vídeos</p>
+          </div>
+        </a>
+      </div>
+
+      <!-- Recent students -->
+      <div class="recent-table" style="margin-bottom:1.5rem;">
+        <div class="table-header">
+          <h3>👥 Alumnos recientes</h3>
+          <a href="/admin/students" class="btn btn-ghost btn-sm">Ver todos</a>
+        </div>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nombre</th>
+              <th>Email</th>
+              <th>Nivel</th>
+              <th>Estado</th>
+              <th>Desde</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for student in students[:8] %}
+              <tr>
+                <td><strong>{{ student.name }}</strong></td>
+                <td style="color:var(--muted);">{{ student.email }}</td>
+                <td>{{ student.level|title }}</td>
+                <td>
+                  {% if student.is_active_member %}
+                    <span class="badge badge-green">Activo</span>
+                  {% else %}
+                    <span class="badge badge-muted">Inactivo</span>
+                  {% endif %}
+                </td>
+                <td style="color:var(--muted);">{{ student.joined_at.strftime('%d/%m/%Y') }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:2rem;">No hay alumnos todavía. <a href="/admin/students/create" style="color:var(--red);">Crear el primero →</a></td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent payments -->
+      {% if recent_payments %}
+      <div class="recent-table">
+        <div class="table-header">
+          <h3>💳 Pagos recientes</h3>
+        </div>
+        <table class="table">
+          <thead>
+            <tr><th>Alumno</th><th>Importe</th><th>Tipo</th><th>Estado</th><th>Fecha</th></tr>
+          </thead>
+          <tbody>
+            {% for p in recent_payments %}
+              <tr>
+                <td>{{ p.user.name }}</td>
+                <td><strong>€{{ '%.2f'|format(p.amount) }}</strong></td>
+                <td>{{ p.payment_type }}</td>
+                <td>
+                  {% if p.status == 'completed' %}
+                    <span class="badge badge-green">✓ Completado</span>
+                  {% else %}
+                    <span class="badge badge-muted">{{ p.status }}</span>
+                  {% endif %}
+                </td>
+                <td style="color:var(--muted);">{{ p.created_at.strftime('%d/%m/%Y') }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

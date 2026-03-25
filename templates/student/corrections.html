@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Correcciones{% endblock %}
+
+{% block extra_css %}
+<style>
+  .two-col{display:grid;grid-template-columns:1fr 1.2fr;gap:2rem;}
+  .correction-item{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;margin-bottom:.8rem;}
+  .correction-item .title{font-weight:700;font-size:.92rem;margin-bottom:.3rem;}
+  .correction-item .date{font-size:.75rem;color:var(--muted);}
+  .correction-item .correction-text{margin-top:.8rem;padding:.8rem;background:#0a0a0a;border-radius:8px;font-size:.85rem;line-height:1.6;border-left:3px solid var(--green);color:#ccc;}
+  .correction-item .original{margin-top:.8rem;font-size:.82rem;color:var(--muted);font-style:italic;}
+  textarea{min-height:120px;resize:vertical;}
+  @media(max-width:900px){.two-col{grid-template-columns:1fr;}}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Área de miembro</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">🏠</span> Mi panel</a>
+      <a href="/videos" class="nav-item"><span class="nav-icon">🎬</span> Todos los vídeos</a>
+      <a href="/corrections" class="nav-item active"><span class="nav-icon">✏️</span> Correcciones</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> Mi perfil</a>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="name">{{ current_user.name }}</div>
+      <div class="email">{{ current_user.email }}</div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Correcciones</div>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="two-col">
+        <!-- Send new -->
+        <div>
+          <div class="page-header">
+            <h1>Enviar texto</h1>
+            <p>Escribe algo en español y Victor lo corregirá</p>
+          </div>
+          <div class="card">
+            <form method="POST">
+              <div class="form-group">
+                <label for="title">Título o tema</label>
+                <input type="text" id="title" name="title" placeholder="Ej: Mi rutina diaria" required>
+              </div>
+              <div class="form-group">
+                <label for="content">Tu texto en español</label>
+                <textarea id="content" name="content" placeholder="Escribe aquí tu texto..." required></textarea>
+              </div>
+              <button type="submit" class="btn btn-red">Enviar para corrección →</button>
+            </form>
+          </div>
+        </div>
+
+        <!-- My corrections -->
+        <div>
+          <div class="page-header">
+            <h1>Mis envíos</h1>
+            <p>Aquí aparecerán tus textos y las correcciones de Victor</p>
+          </div>
+          {% if corrections %}
+            {% for c in corrections %}
+              <div class="correction-item">
+                <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:.5rem;">
+                  <div>
+                    <div class="title">{{ c.title }}</div>
+                    <div class="date">{{ c.created_at.strftime('%d/%m/%Y a las %H:%M') }}</div>
+                  </div>
+                  {% if c.status == 'corrected' %}
+                    <span class="badge badge-green">✓ Corregido</span>
+                  {% else %}
+                    <span class="badge badge-yellow">⏳ Pendiente</span>
+                  {% endif %}
+                </div>
+                <div class="original">Tu texto: {{ c.content[:150] }}{% if c.content|length > 150 %}...{% endif %}</div>
+                {% if c.correction %}
+                  <div class="correction-text">
+                    <strong style="color:var(--green);font-size:.78rem;display:block;margin-bottom:.3rem;">✓ Corrección de Victor:</strong>
+                    {{ c.correction }}
+                  </div>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% else %}
+            <div class="card" style="text-align:center;padding:3rem;">
+              <div style="font-size:2.5rem;margin-bottom:1rem;">✏️</div>
+              <p style="color:var(--muted);font-size:.9rem;">Todavía no has enviado ningún texto. ¡Atrévete a escribir!</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

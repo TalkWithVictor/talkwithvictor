@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Nuevo alumno{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item active"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Crear nuevo alumno</div>
+      <a href="/admin/students" class="btn btn-ghost btn-sm">← Volver</a>
+    </div>
+
+    <div class="page-body" style="max-width:520px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div class="card">
+        <form method="POST">
+          <div class="form-group">
+            <label>Nombre completo</label>
+            <input type="text" name="name" placeholder="Nombre del alumno" required>
+          </div>
+          <div class="form-group">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="alumno@email.com" required>
+          </div>
+          <div class="form-group">
+            <label>Contraseña inicial</label>
+            <input type="text" name="password" placeholder="Contraseña que le darás al alumno" required minlength="6">
+          </div>
+          <div class="form-group">
+            <label>Nivel</label>
+            <select name="level">
+              <option value="beginner">Principiante</option>
+              <option value="intermediate">Intermedio</option>
+              <option value="advanced">Avanzado</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>¿Activar membresía ahora?</label>
+            <select name="active">
+              <option value="true">Sí — acceso inmediato</option>
+              <option value="false">No — espera a que pague</option>
+            </select>
+          </div>
+          <div style="display:flex;gap:.8rem;">
+            <button type="submit" class="btn btn-red">Crear alumno →</button>
+            <a href="/admin/students" class="btn btn-ghost">Cancelar</a>
+          </div>
+        </form>
+      </div>
+
+      <div class="card" style="margin-top:1rem;background:rgba(255,214,10,.05);border-color:rgba(255,214,10,.2);">
+        <p style="font-size:.83rem;color:#ccc;line-height:1.6;">
+          <strong style="color:var(--yellow);">💡 Cómo funciona:</strong><br>
+          Crea aquí la cuenta del alumno y luego envíale el email con su usuario y contraseña. El alumno podrá cambiar su contraseña desde su perfil.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

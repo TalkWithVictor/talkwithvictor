@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+{% block title %}Subir vídeo{% endblock %}
+
+{% block extra_css %}
+<style>
+  .upload-zone{border:2px dashed var(--border);border-radius:12px;padding:3rem 2rem;text-align:center;transition:all .2s;cursor:pointer;background:#0a0a0a;}
+  .upload-zone:hover,.upload-zone.dragover{border-color:var(--red);background:rgba(230,57,70,.04);}
+  .upload-zone .ico{font-size:3rem;margin-bottom:1rem;}
+  .upload-zone p{color:var(--muted);font-size:.88rem;}
+  .upload-zone strong{color:var(--text);}
+  .progress-bar-wrap{display:none;margin-top:1rem;}
+  .progress-bar-bg{background:var(--card);border-radius:100px;height:8px;overflow:hidden;}
+  .progress-bar-fill{background:var(--red);height:100%;width:0%;transition:width .3s;border-radius:100px;}
+  .progress-text{font-size:.78rem;color:var(--muted);margin-top:.3rem;text-align:center;}
+  .tab-switcher{display:flex;gap:.5rem;margin-bottom:1.5rem;}
+  .tab-btn{padding:.5rem 1.2rem;border-radius:8px;font-size:.85rem;font-weight:600;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:inherit;transition:all .2s;}
+  .tab-btn.active{background:var(--red);color:white;border-color:var(--red);}
+  .tab-content{display:none;}
+  .tab-content.active{display:block;}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item active"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Añadir nuevo vídeo</div>
+      <a href="/admin/videos" class="btn btn-ghost btn-sm">← Volver</a>
+    </div>
+
+    <div class="page-body" style="max-width:640px;">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <form method="POST" enctype="multipart/form-data" id="videoForm">
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Título del vídeo *</label>
+            <input type="text" name="title" placeholder="Ej: Cómo usar el subjuntivo" required>
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Categoría *</label>
+              <select name="category" required>
+                <option value="">Seleccionar categoría</option>
+                {% for cat in categories %}
+                  <option value="{{ cat.name }}">{{ cat.emoji }} {{ cat.name }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="form-group" style="margin-bottom:0;">
+              <label>Nivel</label>
+              <select name="level">
+                <option value="all">Todos los niveles</option>
+                <option value="beginner">Principiante</option>
+                <option value="intermediate">Intermedio</option>
+                <option value="advanced">Avanzado</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+          <div style="margin-bottom:1rem;">
+            <div style="font-size:.85rem;font-weight:700;margin-bottom:.7rem;">Fuente del vídeo</div>
+            <div class="tab-switcher">
+              <button type="button" class="tab-btn active" onclick="switchTab('upload')">📁 Subir archivo</button>
+              <button type="button" class="tab-btn" onclick="switchTab('youtube')">▶ URL de YouTube</button>
+            </div>
+          </div>
+
+          <div class="tab-content active" id="tab-upload">
+            <div class="upload-zone" id="uploadZone" onclick="document.getElementById('videoFile').click()">
+              <div class="ico">🎬</div>
+              <strong>Haz clic para seleccionar el vídeo</strong>
+              <p>o arrastra el archivo aquí</p>
+              <p style="margin-top:.5rem;font-size:.75rem;">MP4, MOV, AVI, MKV · Máximo 2GB</p>
+            </div>
+            <input type="file" name="video_file" id="videoFile" accept="video/*" style="display:none;" onchange="showFile(this)">
+            <div id="fileInfo" style="display:none;margin-top:.8rem;padding:.7rem 1rem;background:#0a0a0a;border-radius:8px;font-size:.82rem;color:var(--muted);">
+              📁 <span id="fileName"></span>
+            </div>
+            <div class="progress-bar-wrap" id="progressWrap">
+              <div class="progress-bar-bg"><div class="progress-bar-fill" id="progressFill"></div></div>
+              <div class="progress-text" id="progressText">Subiendo...</div>
+            </div>
+          </div>
+
+          <div class="tab-content" id="tab-youtube">
+            <div class="form-group" style="margin-bottom:0;">
+              <label>URL del vídeo de YouTube</label>
+              <input type="text" name="youtube_url" placeholder="https://www.youtube.com/embed/VIDEO_ID">
+              <div style="font-size:.75rem;color:var(--muted);margin-top:.5rem;">
+                💡 Cambia la URL de YouTube de <code style="color:#ccc;">watch?v=ABC123</code> a <code style="color:#ccc;">embed/ABC123</code>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-bottom:1rem;">
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea name="description" rows="3" placeholder="Describe brevemente el contenido del vídeo..."></textarea>
+          </div>
+          <div class="form-group" style="margin-bottom:0;">
+            <label>Duración <span style="color:var(--muted);font-weight:400;">(opcional)</span></label>
+            <input type="text" name="duration" placeholder="Ej: 12:34">
+          </div>
+        </div>
+
+        <div style="display:flex;gap:.8rem;">
+          <button type="submit" class="btn btn-red" id="submitBtn">Publicar vídeo →</button>
+          <a href="/admin/videos" class="btn btn-ghost">Cancelar</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function switchTab(tab) {
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  event.target.classList.add('active');
+}
+
+function showFile(input) {
+  if (input.files[0]) {
+    const f = input.files[0];
+    document.getElementById('fileInfo').style.display = 'block';
+    document.getElementById('fileName').textContent = f.name + ' (' + (f.size/1024/1024).toFixed(1) + ' MB)';
+  }
+}
+
+// Drag & drop
+const zone = document.getElementById('uploadZone');
+['dragenter','dragover'].forEach(e=>zone.addEventListener(e,ev=>{ev.preventDefault();zone.classList.add('dragover');}));
+['dragleave','drop'].forEach(e=>zone.addEventListener(e,ev=>{ev.preventDefault();zone.classList.remove('dragover');}));
+zone.addEventListener('drop', ev => {
+  const files = ev.dataTransfer.files;
+  if (files[0]) {
+    document.getElementById('videoFile').files = files;
+    showFile(document.getElementById('videoFile'));
+  }
+});
+
+// Show progress on submit
+document.getElementById('videoForm').addEventListener('submit', function() {
+  const file = document.getElementById('videoFile').files[0];
+  if (file && file.size > 5*1024*1024) {
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+    document.getElementById('submitBtn').textContent = 'Subiendo...';
+    // Simulate progress (real progress needs XHR)
+    let p = 0;
+    const interval = setInterval(()=>{
+      p = Math.min(p + Math.random()*8, 90);
+      document.getElementById('progressFill').style.width = p + '%';
+      document.getElementById('progressText').textContent = 'Subiendo... ' + Math.round(p) + '%';
+    }, 500);
+  }
+});
+</script>
+{% endblock %}

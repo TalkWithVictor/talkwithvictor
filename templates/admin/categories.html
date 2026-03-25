@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block title %}Admin – Categorías{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item active"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">📂 Categorías de vídeos</div>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:2rem;">
+        <div>
+          <div style="font-size:.92rem;font-weight:800;margin-bottom:1rem;">Nueva categoría</div>
+          <div class="card">
+            <form method="POST">
+              <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" name="name" placeholder="Ej: Gramática" required>
+              </div>
+              <div class="form-group">
+                <label>Emoji</label>
+                <input type="text" name="emoji" placeholder="📖" maxlength="4">
+              </div>
+              <div class="form-group">
+                <label>Descripción</label>
+                <input type="text" name="description" placeholder="Breve descripción...">
+              </div>
+              <button type="submit" class="btn btn-red">Crear categoría</button>
+            </form>
+          </div>
+        </div>
+
+        <div>
+          <div style="font-size:.92rem;font-weight:800;margin-bottom:1rem;">Categorías existentes</div>
+          <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+            <table class="table">
+              <thead>
+                <tr><th>Emoji</th><th>Nombre</th><th>Descripción</th></tr>
+              </thead>
+              <tbody>
+                {% for cat in categories %}
+                  <tr>
+                    <td style="font-size:1.3rem;">{{ cat.emoji }}</td>
+                    <td><strong>{{ cat.name }}</strong></td>
+                    <td style="color:var(--muted);">{{ cat.description or '—' }}</td>
+                  </tr>
+                {% else %}
+                  <tr><td colspan="3" style="text-align:center;color:var(--muted);padding:2rem;">No hay categorías</td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

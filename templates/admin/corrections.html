@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block title %}Admin – Correcciones{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item active"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">✏️ Correcciones de alumnos</div>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Alumno</th>
+              <th>Título</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for c in corrections %}
+              <tr>
+                <td><strong>{{ c.user.name }}</strong></td>
+                <td>{{ c.title }}</td>
+                <td style="color:var(--muted);">{{ c.created_at.strftime('%d/%m/%Y') }}</td>
+                <td>
+                  {% if c.status == 'corrected' %}
+                    <span class="badge badge-green">✓ Corregido</span>
+                  {% else %}
+                    <span class="badge badge-yellow">⏳ Pendiente</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <a href="/admin/corrections/{{ c.id }}" class="btn btn-ghost btn-sm">
+                    {% if c.status == 'corrected' %}Ver{% else %}Corregir →{% endif %}
+                  </a>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:3rem;">
+                No hay correcciones pendientes. ¡Todo al día!
+              </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

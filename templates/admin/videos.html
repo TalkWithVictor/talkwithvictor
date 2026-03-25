@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Admin – Vídeos{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Panel de administrador</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Gestión</div>
+      <a href="/admin" class="nav-item"><span class="nav-icon">📊</span> Panel</a>
+      <a href="/admin/students" class="nav-item"><span class="nav-icon">👥</span> Alumnos</a>
+      <a href="/admin/videos" class="nav-item active"><span class="nav-icon">🎬</span> Vídeos</a>
+      <a href="/admin/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <a href="/admin/categories" class="nav-item"><span class="nav-icon">📂</span> Categorías</a>
+      <div class="nav-section">Ver como alumno</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">👁️</span> Vista alumno</a>
+      <a href="/" class="nav-item"><span class="nav-icon">🌐</span> Ver web pública</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">🎬 Vídeos ({{ videos|length }})</div>
+      <a href="/admin/videos/upload" class="btn btn-red btn-sm">+ Subir vídeo</a>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Título</th>
+              <th>Categoría</th>
+              <th>Nivel</th>
+              <th>Tipo</th>
+              <th>Vistas</th>
+              <th>Estado</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for video in videos %}
+              <tr>
+                <td><strong>{{ video.title }}</strong></td>
+                <td style="color:var(--muted);">{{ video.category }}</td>
+                <td><span class="badge badge-muted">{{ video.level|title }}</span></td>
+                <td>
+                  {% if video.filename %}
+                    <span class="badge badge-green">📁 Subido</span>
+                  {% elif video.youtube_url %}
+                    <span class="badge badge-yellow">▶ YouTube</span>
+                  {% endif %}
+                </td>
+                <td>{{ video.view_count }}</td>
+                <td>
+                  {% if video.is_published %}
+                    <span class="badge badge-green">Publicado</span>
+                  {% else %}
+                    <span class="badge badge-muted">Borrador</span>
+                  {% endif %}
+                </td>
+                <td>
+                  <div style="display:flex;gap:.5rem;">
+                    <form action="/admin/videos/{{ video.id }}/toggle" method="POST" style="margin:0;">
+                      <button type="submit" class="btn btn-ghost btn-sm">
+                        {% if video.is_published %}Ocultar{% else %}Publicar{% endif %}
+                      </button>
+                    </form>
+                    <form action="/admin/videos/{{ video.id }}/delete" method="POST" style="margin:0;" onsubmit="return confirm('¿Eliminar este vídeo?');">
+                      <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="7" style="text-align:center;color:var(--muted);padding:3rem;">
+                No hay vídeos todavía. <a href="/admin/videos/upload" style="color:var(--red);">Subir el primero →</a>
+              </td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

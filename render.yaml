@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: talkwithvictor
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -c "from app import init_db; init_db()" && gunicorn app:app --timeout 120
+    envVars:
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ADMIN_EMAIL
+        value: victor9232005@gmail.com
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: APP_URL
+        sync: false

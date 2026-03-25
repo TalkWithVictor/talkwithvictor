@@ -1,0 +1,10 @@
+.env
+*.db
+__pycache__/
+*.pyc
+*.pyo
+uploads/videos/*
+!uploads/videos/.gitkeep
+.DS_Store
+venv/
+env/

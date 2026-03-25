@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Planes – Talk With Victor</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    *{margin:0;padding:0;box-sizing:border-box;}
+    :root{--red:#E63946;--red2:#c1121f;--yellow:#FFD60A;--dark:#0D0D0D;--card:#161616;--border:rgba(255,255,255,0.08);--muted:#888;--text:#F0F0F0;}
+    body{font-family:'Inter',sans-serif;background:var(--dark);color:var(--text);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 1rem;}
+    nav{position:fixed;top:0;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:1rem 5%;background:rgba(13,13,13,.92);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);z-index:99;}
+    .logo{font-size:1.2rem;font-weight:900;} .logo span{color:var(--red);}
+    .nav-links{display:flex;gap:1rem;align-items:center;}
+    .nav-links a{color:var(--muted);font-size:.85rem;font-weight:500;text-decoration:none;}
+    .nav-links a:hover{color:white;}
+    .wrap{max-width:500px;width:100%;margin-top:5rem;}
+    h1{font-size:2rem;font-weight:900;text-align:center;letter-spacing:-1px;margin-bottom:.5rem;}
+    .sub{text-align:center;color:var(--muted);font-size:.95rem;margin-bottom:2.5rem;}
+    .price-card{background:var(--card);border:2px solid rgba(230,57,70,.4);border-radius:20px;overflow:hidden;box-shadow:0 0 60px rgba(230,57,70,.1);}
+    .price-top{background:linear-gradient(135deg,var(--red),var(--red2));padding:2rem 2.5rem;text-align:center;}
+    .price-top .badge{font-size:.72rem;font-weight:700;letter-spacing:.1em;opacity:.85;margin-bottom:.5rem;}
+    .price-amount{font-size:3.5rem;font-weight:900;letter-spacing:-2px;}
+    .price-amount span{font-size:1rem;font-weight:400;opacity:.75;}
+    .price-note{font-size:.82rem;opacity:.8;margin-top:.2rem;}
+    .enroll-fee{display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.15);border-radius:100px;padding:.3rem .9rem;font-size:.78rem;font-weight:600;margin-top:.8rem;}
+    .price-body{padding:1.8rem 2.5rem;}
+    .features{list-style:none;margin-bottom:1.8rem;}
+    .features li{display:flex;align-items:center;gap:10px;padding:.55rem 0;border-bottom:1px solid var(--border);font-size:.88rem;}
+    .features li:last-child{border-bottom:none;}
+    .check{color:var(--red);font-weight:900;font-size:1.1rem;}
+    .cta{display:block;background:linear-gradient(135deg,var(--red),var(--red2));color:white;text-align:center;padding:1rem;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;border:none;width:100%;font-family:inherit;transition:all .2s;box-shadow:0 4px 20px rgba(230,57,70,.35);}
+    .cta:hover{opacity:.9;transform:translateY(-1px);}
+    .note{text-align:center;color:var(--muted);font-size:.76rem;margin-top:.8rem;}
+    .back{text-align:center;margin-top:1.5rem;font-size:.82rem;color:var(--muted);}
+    .back a{color:var(--text);font-weight:600;}
+    .alert{padding:.9rem 1.2rem;border-radius:8px;margin-bottom:1.2rem;font-size:.87rem;font-weight:500;}
+    .alert-warning{background:rgba(255,214,10,.1);border:1px solid rgba(255,214,10,.3);color:var(--yellow);}
+    .alert-danger{background:rgba(230,57,70,.1);border:1px solid rgba(230,57,70,.3);color:#FF6B7A;}
+  </style>
+</head>
+<body>
+<nav>
+  <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+  <div class="nav-links">
+    <a href="/">Inicio</a>
+    <a href="/login">Entrar</a>
+  </div>
+</nav>
+
+<div class="wrap">
+  <h1>Únete a la plataforma</h1>
+  <p class="sub">Acceso completo a todos los vídeos y contenido de español</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+      <div class="alert alert-{{ category }}">{{ message }}</div>
+    {% endfor %}
+  {% endwith %}
+
+  <div class="price-card">
+    <div class="price-top">
+      <div class="badge">MEMBRESÍA MENSUAL</div>
+      <div class="price-amount">€35<span>/mes</span></div>
+      <div class="price-note">Cancela cuando quieras</div>
+      <div class="enroll-fee">+ €50 matrícula única</div>
+    </div>
+    <div class="price-body">
+      <ul class="features">
+        <li><span class="check">✓</span> Acceso a todos los vídeos</li>
+        <li><span class="check">✓</span> Nuevos vídeos cada semana</li>
+        <li><span class="check">✓</span> Corrección de textos y ejercicios</li>
+        <li><span class="check">✓</span> Clases en vivo incluidas</li>
+        <li><span class="check">✓</span> Recursos descargables</li>
+        <li><span class="check">✓</span> Soporte directo con Victor</li>
+      </ul>
+      {% if current_user.is_authenticated %}
+        <form action="/checkout" method="POST">
+          <button type="submit" class="cta">Pagar con tarjeta →</button>
+        </form>
+      {% else %}
+        <a href="/login" class="cta">Iniciar sesión para continuar →</a>
+      {% endif %}
+      <p class="note">Pago seguro con Stripe · Cancela en cualquier momento</p>
+    </div>
+  </div>
+
+  <div class="back">
+    ¿Ya eres miembro? <a href="/login">Inicia sesión</a> &nbsp;·&nbsp; <a href="/">Volver al inicio</a>
+  </div>
+</div>
+</body>
+</html>

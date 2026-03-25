@@ -1,0 +1,161 @@
+{% extends "base.html" %}
+{% block title %}Mi Panel{% endblock %}
+
+{% block extra_css %}
+<style>
+  .welcome-banner{background:linear-gradient(135deg,#1a0808,#0D0D0D);border:1px solid rgba(230,57,70,.2);border-radius:16px;padding:1.8rem 2rem;margin-bottom:2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  .welcome-banner h2{font-size:1.3rem;font-weight:900;margin-bottom:.3rem;}
+  .welcome-banner p{color:var(--muted);font-size:.88rem;}
+  .welcome-emoji{font-size:3rem;}
+  .section-title{font-size:1rem;font-weight:800;margin-bottom:1rem;display:flex;align-items:center;gap:.5rem;}
+  .video-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:1rem;margin-bottom:2rem;}
+  .video-card{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;transition:all .2s;cursor:pointer;}
+  .video-card:hover{transform:translateY(-3px);border-color:rgba(230,57,70,.3);box-shadow:0 8px 24px rgba(0,0,0,.3);}
+  .video-thumb{height:140px;background:linear-gradient(135deg,#1a0808,#0D0D0D);display:flex;align-items:center;justify-content:center;font-size:2.5rem;position:relative;}
+  .video-thumb .play{width:48px;height:48px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;}
+  .video-viewed{position:absolute;top:.5rem;right:.5rem;background:rgba(45,198,83,.8);color:white;font-size:.65rem;font-weight:700;padding:.2rem .5rem;border-radius:100px;}
+  .video-info{padding:.9rem;}
+  .video-info .cat{font-size:.7rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin-bottom:.3rem;}
+  .video-info h4{font-size:.88rem;font-weight:700;margin-bottom:.3rem;line-height:1.3;}
+  .video-info .dur{font-size:.75rem;color:var(--muted);}
+  .correction-list{display:flex;flex-direction:column;gap:.7rem;}
+  .correction-item{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1rem 1.2rem;display:flex;align-items:center;justify-content:space-between;gap:1rem;}
+  .correction-item .title{font-size:.88rem;font-weight:600;}
+  .correction-item .date{font-size:.75rem;color:var(--muted);}
+  .progress-section{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:1rem;margin-bottom:2rem;}
+  .prog-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.2rem;text-align:center;}
+  .prog-num{font-size:2rem;font-weight:900;}
+  .prog-num.red{color:var(--red);}
+  .prog-num.green{color:var(--green);}
+  .prog-num.yellow{color:var(--yellow);}
+  .prog-lbl{font-size:.75rem;color:var(--muted);margin-top:.2rem;}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Área de miembro</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <a href="/dashboard" class="nav-item active"><span class="nav-icon">🏠</span> Mi panel</a>
+      <a href="/videos" class="nav-item"><span class="nav-icon">🎬</span> Todos los vídeos</a>
+      <a href="/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> Mi perfil</a>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="name">{{ current_user.name }}</div>
+      <div class="email">{{ current_user.email }}</div>
+    </div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">Mi panel</div>
+      <div style="display:flex;align-items:center;gap:.8rem;">
+        <span class="badge badge-green">✓ Miembro activo</span>
+        <a href="/videos" class="btn btn-red btn-sm">Ver todos los vídeos</a>
+      </div>
+    </div>
+
+    <div class="page-body">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endwith %}
+
+      <!-- Welcome -->
+      <div class="welcome-banner">
+        <div>
+          <h2>¡Hola, {{ current_user.name }}! 👋</h2>
+          <p>Bienvenido a tu espacio de aprendizaje de español. ¡Sigue practicando!</p>
+        </div>
+        <div class="welcome-emoji">🇪🇸</div>
+      </div>
+
+      <!-- Stats -->
+      <div class="progress-section">
+        <div class="prog-card">
+          <div class="prog-num red">{{ viewed_ids|length }}</div>
+          <div class="prog-lbl">Vídeos vistos</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-num yellow">{{ total_videos }}</div>
+          <div class="prog-lbl">Total disponibles</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-num green">{{ corrections|length }}</div>
+          <div class="prog-lbl">Correcciones enviadas</div>
+        </div>
+        <div class="prog-card">
+          <div class="prog-num" style="color:#ccc;">{{ current_user.level|title }}</div>
+          <div class="prog-lbl">Tu nivel</div>
+        </div>
+      </div>
+
+      <!-- Recent Videos -->
+      <div class="section-title">🎬 Vídeos recientes</div>
+      {% if videos %}
+        <div class="video-grid">
+          {% for video in videos %}
+            <a href="/video/{{ video.id }}" style="text-decoration:none;color:inherit;">
+              <div class="video-card">
+                <div class="video-thumb">
+                  <div class="play">▶</div>
+                  {% if video.id in viewed_ids %}
+                    <div class="video-viewed">✓ Visto</div>
+                  {% endif %}
+                </div>
+                <div class="video-info">
+                  <div class="cat">{{ video.category }}</div>
+                  <h4>{{ video.title }}</h4>
+                  <div class="dur">{% if video.duration %}⏱ {{ video.duration }}{% else %}Ver vídeo{% endif %}</div>
+                </div>
+              </div>
+            </a>
+          {% endfor %}
+        </div>
+        <a href="/videos" class="btn btn-ghost" style="margin-bottom:2rem;">Ver todos los vídeos →</a>
+      {% else %}
+        <div class="card" style="text-align:center;padding:3rem;margin-bottom:2rem;">
+          <div style="font-size:3rem;margin-bottom:1rem;">🎬</div>
+          <p style="color:var(--muted);">Victor está preparando los primeros vídeos. ¡Vuelve pronto!</p>
+        </div>
+      {% endif %}
+
+      <!-- Corrections -->
+      <div class="section-title">✏️ Mis correcciones recientes</div>
+      {% if corrections %}
+        <div class="correction-list">
+          {% for c in corrections %}
+            <div class="correction-item">
+              <div>
+                <div class="title">{{ c.title }}</div>
+                <div class="date">{{ c.created_at.strftime('%d/%m/%Y') }}</div>
+              </div>
+              {% if c.status == 'corrected' %}
+                <span class="badge badge-green">✓ Corregido</span>
+              {% else %}
+                <span class="badge badge-yellow">⏳ Pendiente</span>
+              {% endif %}
+            </div>
+          {% endfor %}
+        </div>
+        <a href="/corrections" class="btn btn-ghost" style="margin-top:1rem;">Ver todas →</a>
+      {% else %}
+        <div class="card" style="margin-bottom:1rem;">
+          <p style="color:var(--muted);font-size:.9rem;">Aún no has enviado ningún texto para corrección. <a href="/corrections" style="color:var(--red);font-weight:600;">Enviar mi primer texto →</a></p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

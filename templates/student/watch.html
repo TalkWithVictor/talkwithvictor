@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}{{ video.title }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .video-container{max-width:900px;margin:0 auto;}
+  .video-player-wrap{background:#000;border-radius:16px;overflow:hidden;margin-bottom:1.5rem;position:relative;aspect-ratio:16/9;}
+  .video-player-wrap video{width:100%;height:100%;display:block;}
+  .video-player-wrap iframe{width:100%;height:100%;border:none;}
+  .video-meta{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;margin-bottom:1rem;}
+  .video-meta .cat{font-size:.72rem;color:var(--red);font-weight:700;text-transform:uppercase;letter-spacing:.06em;margin-bottom:.5rem;}
+  .video-meta h1{font-size:1.4rem;font-weight:900;letter-spacing:-.5px;margin-bottom:.8rem;}
+  .video-meta .desc{color:var(--muted);font-size:.9rem;line-height:1.7;}
+  .video-meta .stats{display:flex;gap:1.5rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--border);}
+  .video-meta .stat{font-size:.8rem;color:var(--muted);}
+  .video-meta .stat strong{color:var(--text);}
+  .complete-btn{background:var(--green);color:white;border:none;padding:.7rem 1.5rem;border-radius:8px;font-weight:700;font-size:.88rem;cursor:pointer;font-family:inherit;transition:all .2s;}
+  .complete-btn:hover{opacity:.9;}
+  .complete-btn.done{background:#1a4a2a;color:var(--green);}
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="app-layout">
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo">Talk With <span>Victor</span> 🇪🇸</div>
+      <div class="role">Área de miembro</div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-section">Principal</div>
+      <a href="/dashboard" class="nav-item"><span class="nav-icon">🏠</span> Mi panel</a>
+      <a href="/videos" class="nav-item active"><span class="nav-icon">🎬</span> Todos los vídeos</a>
+      <a href="/corrections" class="nav-item"><span class="nav-icon">✏️</span> Correcciones</a>
+      <div class="nav-section">Cuenta</div>
+      <a href="/profile" class="nav-item"><span class="nav-icon">👤</span> Mi perfil</a>
+      <a href="/logout" class="nav-item"><span class="nav-icon">🚪</span> Cerrar sesión</a>
+    </nav>
+    <div class="sidebar-user">
+      <div class="name">{{ current_user.name }}</div>
+      <div class="email">{{ current_user.email }}</div>
+    </div>
+  </aside>
+
+  <div class="main-content">
+    <div class="topbar">
+      <div class="topbar-title">
+        <a href="/videos" style="color:var(--muted);">Vídeos</a> › {{ video.title }}
+      </div>
+      <a href="/videos" class="btn btn-ghost btn-sm">← Volver</a>
+    </div>
+
+    <div class="page-body">
+      <div class="video-container">
+        <div class="video-player-wrap">
+          {% if video.youtube_url %}
+            <iframe src="{{ video.youtube_url }}" allowfullscreen allow="autoplay; encrypted-media"></iframe>
+          {% elif video.filename %}
+            <video controls>
+              <source src="/serve-video/{{ video.id }}" type="video/mp4">
+              Tu navegador no soporta la reproducción de vídeo.
+            </video>
+          {% endif %}
+        </div>
+
+        <div class="video-meta">
+          <div class="cat">{{ video.category }}</div>
+          <h1>{{ video.title }}</h1>
+          {% if video.description %}
+            <p class="desc">{{ video.description }}</p>
+          {% endif %}
+          <div class="stats">
+            <div class="stat"><strong>{{ video.category }}</strong><br>Categoría</div>
+            <div class="stat"><strong>{{ video.level|title }}</strong><br>Nivel</div>
+            {% if video.duration %}<div class="stat"><strong>{{ video.duration }}</strong><br>Duración</div>{% endif %}
+            <div class="stat"><strong>{{ video.view_count }}</strong><br>Vistas</div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+          <button class="complete-btn" id="completeBtn" onclick="markComplete()">
+            ✓ Marcar como completado
+          </button>
+          <a href="/videos" class="btn btn-ghost">← Volver a todos los vídeos</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function markComplete() {
+  fetch('/video/{{ video.id }}/complete', {method:'POST'})
+    .then(()=>{
+      const btn = document.getElementById('completeBtn');
+      btn.textContent = '✓ ¡Completado!';
+      btn.classList.add('done');
+      btn.disabled = true;
+    });
+}
+</script>
+{% endblock %}
