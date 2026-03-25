@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Account – Talk With Victor</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --red:#E63946; --red2:#c1121f; --yellow:#FFD60A;
+      --dark:#0D0D0D; --card:#161616; --border:rgba(255,255,255,0.08); --muted:#888; --text:#F0F0F0;
+    }
+    body { font-family:'Inter',sans-serif; background:var(--dark); color:var(--text); min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:2rem; }
+    .logo { font-size:1.4rem; font-weight:900; letter-spacing:-.5px; margin-bottom:2rem; text-decoration:none; color:white; }
+    .logo .v { color:var(--red); }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:20px; padding:2.5rem; width:100%; max-width:420px; }
+    .card h1 { font-size:1.6rem; font-weight:900; letter-spacing:-.5px; margin-bottom:.3rem; }
+    .card p { color:var(--muted); font-size:.88rem; margin-bottom:2rem; }
+    .field { margin-bottom:1.2rem; }
+    .field label { display:block; font-size:.82rem; font-weight:600; margin-bottom:.5rem; color:#ccc; }
+    .field input { width:100%; background:rgba(255,255,255,.05); border:1px solid var(--border); border-radius:10px; padding:.85rem 1rem; color:white; font-size:.95rem; font-family:inherit; transition:border-color .2s; }
+    .field input:focus { outline:none; border-color:rgba(230,57,70,.5); }
+    .field input::placeholder { color:#555; }
+    .btn-submit { width:100%; background:linear-gradient(135deg,var(--red),var(--red2)); color:white; border:none; border-radius:10px; padding:1rem; font-size:1rem; font-weight:700; font-family:inherit; cursor:pointer; transition:all .2s; box-shadow:0 4px 20px rgba(230,57,70,.3); margin-top:.5rem; }
+    .btn-submit:hover { opacity:.9; transform:translateY(-1px); }
+    .stripe-note { text-align:center; color:var(--muted); font-size:.76rem; margin-top:1rem; }
+    .login-link { text-align:center; margin-top:1.5rem; font-size:.85rem; color:var(--muted); }
+    .login-link a { color:var(--red); text-decoration:none; font-weight:600; }
+    .login-link a:hover { text-decoration:underline; }
+    .flash { padding:.8rem 1rem; border-radius:8px; margin-bottom:1rem; font-size:.85rem; }
+    .flash.danger { background:rgba(230,57,70,.15); border:1px solid rgba(230,57,70,.3); color:#ff8f96; }
+    .flash.warning { background:rgba(255,214,10,.1); border:1px solid rgba(255,214,10,.2); color:var(--yellow); }
+    .price-tag { background:rgba(230,57,70,.08); border:1px solid rgba(230,57,70,.2); border-radius:10px; padding:.8rem 1rem; margin-bottom:1.5rem; display:flex; align-items:center; justify-content:space-between; }
+    .price-tag .price { font-size:1.4rem; font-weight:900; }
+    .price-tag .desc { font-size:.78rem; color:var(--muted); }
+  </style>
+</head>
+<body>
+  <a href="/" class="logo">Talk<span class="v">With</span>Victor 🇪🇸</a>
+  <div class="card">
+    <h1>Create your account</h1>
+    <p>Step 1 of 2 — You'll complete payment on the next screen.</p>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="price-tag">
+      <div>
+        <div class="price">€49 <span style="font-size:.9rem;font-weight:400;color:var(--muted);">/ month</span></div>
+        <div class="desc">Full membership · Cancel anytime</div>
+      </div>
+      <div style="font-size:1.5rem;">🇪🇸</div>
+    </div>
+
+    <form method="POST" action="/register">
+      <div class="field">
+        <label>Your name</label>
+        <input type="text" name="name" placeholder="e.g. María" required autocomplete="name"/>
+      </div>
+      <div class="field">
+        <label>Email address</label>
+        <input type="email" name="email" placeholder="tu@email.com" required autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Password <span style="color:var(--muted);font-weight:400;">(min. 6 characters)</span></label>
+        <input type="password" name="password" placeholder="••••••••" required autocomplete="new-password"/>
+      </div>
+      <button type="submit" class="btn-submit">Continue to payment →</button>
+    </form>
+    <p class="stripe-note">🔒 Secure payment processed by Stripe</p>
+    <div class="login-link">Already have an account? <a href="/login">Log in here</a></div>
+  </div>
+</body>
+</html>
