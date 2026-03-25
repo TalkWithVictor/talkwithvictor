@@ -102,8 +102,37 @@ def logout():
 def pricing():
     return render_template('pricing.html')
 
+@app.route('/register', methods=['GET', 'POST'])
+def register():
+    if current_user.is_authenticated:
+        if current_user.role == 'admin':
+            return redirect(url_for('admin_dashboard'))
+        return redirect(url_for('student_dashboard'))
+    if request.method == 'POST':
+        name = request.form.get('name', '').strip()
+        email = request.form.get('email', '').strip().lower()
+        password = request.form.get('password', '').strip()
+        if not name or not email or not password:
+            flash('Por favor rellena todos los campos.', 'danger')
+            return render_template('register.html')
+        if len(password) < 6:
+            flash('La contraseña debe tener mínimo 6 caracteres.', 'danger')
+            return render_template('register.html')
+        if User.query.filter_by(email=email).first():
+            flash('Ya existe una cuenta con ese email. Inicia sesión.', 'warning')
+            return redirect(url_for('login'))
+        user = User(name=name, email=email, role='student', is_active_member=False)
+        user.set_password(password)
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return redirect(url_for('checkout'))
+    return render_template('register.html')
+
+
+
 # ─── Stripe / Payments ────────────────────────────────────────────────────────
-@app.route('/checkout', methods=['POST'])
+@app.route('/checkout', methods=['GET', 'POST'])
 @login_required
 def checkout():
     if not stripe.api_key:
@@ -138,8 +167,8 @@ def payment_success():
             payment = Payment(
                 user_id=current_user.id,
                 stripe_payment_id=session_id,
-                amount=session.amount_total / 100 if session.amount_total else 85,
-                payment_type='enrollment+monthly',
+                amount=session.amount_total / 100 if session.amount_total else 49,
+                payment_type='monthly',
                 status='completed'
             )
             db.session.add(payment)
