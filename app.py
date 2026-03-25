@@ -114,7 +114,6 @@ def checkout():
             customer_email=current_user.email,
             payment_method_types=['card'],
             line_items=[
-                {'price': STRIPE_ENROLLMENT_PRICE, 'quantity': 1},
                 {'price': STRIPE_MONTHLY_PRICE, 'quantity': 1},
             ],
             mode='subscription',
